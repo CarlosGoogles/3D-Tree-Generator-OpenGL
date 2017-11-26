@@ -1,19 +1,19 @@
 #include <bits/stdc++.h>
+#include <GL/glut.h>
+#include "CameraWindow.h"
 
 #define FOR(i, a, b) for(int i=int(a); i<int(b); i++)
 
 using namespace std;
-
-#include <GL/glut.h>
 
 GLuint makeaTree;
 //double x,y,z;
 // angle for rotating triangle
 double angle = 0.0f;
 // actual vector representing the camera's direction
-double lx = 0.0f, lz = -1.0f;
+// double lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
-double x = 0.0f, z = 5.0f, y;
+// double x = 0.0f, z = 5.0f, y;
 
 void makeCylinder(double height, double base) {
     int randd = rand() % 50 + 20;
@@ -79,13 +79,13 @@ void keyboard(unsigned char key, int x, int y) {
 }
 */
 
-void display(){
+void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-    glRotatef(x, 1.0f, 0.0f, 0.0f);
-    glRotatef(y, 0.0f, 1.0f, 0.0f);
-    glRotatef(z, 0.0f, 0.0f, 1.0f);
-    glCallList(makeaTree);
+        glRotatef(camaraMov[0], 1.0f, 0.0f, 0.0f);
+        glRotatef(camaraMov[1], 0.0f, 1.0f, 0.0f);
+        glRotatef(camaraMov[2], 0.0f, 0.0f, 1.0f);
+        glCallList(makeaTree);
 
     glPopMatrix();
     glutSwapBuffers();
@@ -101,21 +101,21 @@ void processSpecialKeys(int key, int xx, int yy) {
     switch (key) {
         case GLUT_KEY_LEFT :
             angle -= 0.41f;
-            lx = sin(angle);
-            lz = -cos(angle);
+            //lx = sin(angle);
+            //lz = -cos(angle);
             break;
         case GLUT_KEY_RIGHT :
             angle += 0.41f;
-            lx = sin(angle);
-            lz = -cos(angle);
+            //lx = sin(angle);
+            //lz = -cos(angle);
             break;
         case GLUT_KEY_UP :
-            x += lx * fraction;
-            z += lz * fraction;
+            //x += lx * fraction;
+            //z += lz * fraction;
             break;
         case GLUT_KEY_DOWN :
-            x -= lx * fraction;
-            z -= lz * fraction;
+            //x -= lx * fraction;
+            //z -= lz * fraction;
             break;
     }
 }
@@ -132,15 +132,17 @@ void reshape(int w, int h) {
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize (1200, 800); glutInitWindowPosition(0,0);
-    glutCreateWindow("3D Tree Using Recursion");
+    WindowID1 = glutCreateWindow("3D Tree Using Recursion");
     init();
     glutReshapeFunc(reshape);
     glutKeyboardFunc(processNormalKeys);
     glutSpecialFunc(processSpecialKeys);
 
     glutDisplayFunc(display);
+    glutIdleFunc(display);
+    createWindowCamera();
 
     glutMainLoop();
 
