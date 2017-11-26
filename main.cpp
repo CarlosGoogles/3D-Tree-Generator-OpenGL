@@ -7,30 +7,29 @@ using namespace std;
 #include <GL/glut.h>
 
 GLuint makeaTree;
-//float x,y,z;
+//double x,y,z;
 // angle for rotating triangle
-float angle = 0.0f;
+double angle = 0.0f;
 // actual vector representing the camera's direction
-float lx=0.0f,lz=-1.0f;
+double lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
-float x=0.0f,z=5.0f,y;
+double x = 0.0f, z = 5.0f, y;
 
-void makeCylinder(float height, float base){
-int randd =
-randd=rand()%50+20;
-GLUquadric *obj = gluNewQuadric();
-//gluQuadricDrawStyle(obj, GLU_LINE);
-glColor3f(0.64f, 0.16, 0.16f);glPushMatrix();
-glRotatef(-90, 1.0,0.0,0.0);
-gluCylinder(obj, base,base-(0.2*base), height, 20,20);
-glPopMatrix();
-glutSwapBuffers();
+void makeCylinder(double height, double base) {
+    int randd = rand() % 50 + 20;
+    GLUquadric *obj = gluNewQuadric();
+    //gluQuadricDrawStyle(obj, GLU_LINE);
+    glColor3f( 0.64f, 0.16, 0.16f);glPushMatrix();
+    glRotatef(-90.0f, 1.00, 0.0f, 0.0f);
+    gluCylinder(obj, base, base - (0.2f * base), height, 20.0f, 20.0f);
+    glPopMatrix();
+    glutSwapBuffers();
 }
 
 
-void makeTree(float height, float base){
+void makeTree(double height, double base){
     int randy = 0;
-    float angle;
+    double angle;
     makeCylinder(height, base);
     glTranslatef(0.0f, height, 0.0f);
     height -= height * 0.2f;
@@ -47,7 +46,7 @@ void makeTree(float height, float base){
             makeTree(height,base);
             glPopMatrix();
         }
-        else glColor3f(0.0,1.0/a,0.0);glutSolidSphere(.2,10,10);
+        else glColor3f(0.0f, 1.0f / a, 0.0f); glutSolidSphere(0.2f, 10, 10);
     }
 }
 
@@ -61,22 +60,24 @@ void init(void) {
     glEndList();
 }
 
-//void keyboard(unsigned char key, int x, int y){
-//switch (key){
-//case 'x':
-//x +=10;
-//glutPostRedisplay();
-//break;
-//case 'y':
-//y +=10;
-//glutPostRedisplay();
-//break;
-//case 'z':
-//z+=10;
-//glutPostRedisplay();
-//break;
-//}
-//}
+/*
+void keyboard(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'x':
+        x += 10.0f;
+        glutPostRedisplay();
+        break;
+    case 'y':
+        y += 10.0f;
+        glutPostRedisplay();
+        break;
+    case 'z':
+        z += 10.0f;
+        glutPostRedisplay();
+        break;
+    }
+}
+*/
 
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -95,7 +96,7 @@ void processNormalKeys(unsigned char key, int x, int y) {
 }
 
 void processSpecialKeys(int key, int xx, int yy) {
-    float fraction = 0.1f;
+    double fraction = 0.1f;
 
     switch (key) {
         case GLUT_KEY_LEFT :
@@ -123,7 +124,7 @@ void reshape(int w, int h) {
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(30.0f, (GLfloat) w/(GLfloat) h, 0.001f, 1000.0f);
+    gluPerspective(30.0f, (GLdouble) w/(GLdouble) h, 0.001f, 1000.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0f, -8.0f, -50.0f);
