@@ -138,6 +138,8 @@ void mouseButtonPressed(int button, int key, int x, int y) {
     cout << "tilt:\t" << camaraRot[0] << endl;
     cout << "pan:\t" << camaraRot[1] << endl;
     cout << "roll:\t" << camaraRot[2] << endl;
+
+    glutPostRedisplay();
 }
 
 void drawStrokeText(string s, double x, double y, double z, double sx, double sy, double sz) {
@@ -152,6 +154,9 @@ void drawStrokeText(string s, double x, double y, double z, double sx, double sy
 }
 
 void displayCamera() {
+
+    glutSetWindow(WindowID2);
+
     camaraWindowWidth = glutGet(GLUT_WINDOW_WIDTH);
     camaraWindowHeight = glutGet(GLUT_WINDOW_HEIGHT);
     glutMouseFunc(mouseButtonPressed);
@@ -211,13 +216,8 @@ void displayCamera() {
     glFlush();
 }
 
-void display2() {
-    // displayCamera();
-}
-
 void createWindowCamera() {
     WindowID2 = glutCreateWindow("Camera"); // Create a camera
     glutDisplayFunc(displayCamera);   // Register display callback
-    glutIdleFunc(displayCamera);   // Register display callback
 }
 

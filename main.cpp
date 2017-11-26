@@ -80,6 +80,7 @@ void keyboard(unsigned char key, int x, int y) {
 */
 
 void display() {
+    glutSetWindow(WindowID1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
         glRotatef(camaraMov[0], 1.0f, 0.0f, 0.0f);
@@ -130,6 +131,11 @@ void reshape(int w, int h) {
     glTranslatef(0.0f, -8.0f, -50.0f);
 }
 
+void render() {
+    display();
+    displayCamera();
+}
+
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -141,9 +147,9 @@ int main(int argc, char **argv) {
     glutSpecialFunc(processSpecialKeys);
 
     glutDisplayFunc(display);
-    glutIdleFunc(display);
-    createWindowCamera();
 
+    createWindowCamera();
+    glutDisplayFunc(render);
     glutMainLoop();
 
     return EXIT_SUCCESS;
