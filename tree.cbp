@@ -43,6 +43,8 @@
 			<Add directory="C:/Program Files (x86)/CodeBlocks/MinGW/lib" />
 		</Linker>
 		<Unit filename="CameraWindow.h" />
+		<Unit filename="ModifierWindow.h" />
+		<Unit filename="Utility.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

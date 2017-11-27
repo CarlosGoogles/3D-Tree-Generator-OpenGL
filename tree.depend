@@ -252,13 +252,16 @@
 	<stddef.h>
 	<GL/gl.h>
 
-1511746044 source:d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\main.cpp
+1511753030 source:d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\main.cpp
 	<bits/stdc++.h>
 	<GL/glut.h>
+	"Utility.h"
 	"CameraWindow.h"
+	"ModifierWindow.h"
 
-1511747176 d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\camerawindow.h
-	<cstdlib>
-	<GL/glut.h>
-	<bits/stdc++.h>
+1511753111 d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\camerawindow.h
+
+1511752211 d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\utility.h
+
+1511753110 d:\documentos\carrera\semestre 9\graficas\parcial 3\proyecto final\3d-tree-generator-opengl\modifierwindow.h
 

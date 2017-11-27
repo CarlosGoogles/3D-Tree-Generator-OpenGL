@@ -1,10 +1,15 @@
 #include <bits/stdc++.h>
 #include <GL/glut.h>
-#include "CameraWindow.h"
 
 #define FOR(i, a, b) for(int i=int(a); i<int(b); i++)
 
 using namespace std;
+
+typedef pair<int, int> ii;
+
+#include "Utility.h"
+#include "CameraWindow.h"
+#include "ModifierWindow.h"
 
 GLuint makeaTree;
 //double x,y,z;
@@ -82,9 +87,6 @@ void keyboard(unsigned char key, int x, int y) {
 void display() {
     glutSetWindow(WindowID1);
 
-    double lx = sin(camaraRot[0]);
-    double lz = -cos(camaraRot[2]);
-
     glLoadIdentity();
     glRotatef(-camaraRot[2], 0.0f, 0.0f, 1.0f);
     glRotatef(-camaraRot[1], 0.0f, 1.0f, 0.0f);
@@ -144,12 +146,15 @@ void reshape(int w, int h) {
 void render() {
     display();
     displayCamera();
+    displayModifier();
 }
 
 int main(int argc, char **argv) {
+    GetDesktopResolution();
+
     glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize (600, 400); glutInitWindowPosition(0,0);
+    glutInitWindowSize (screenSizeHorizontal * 2.0f / 3.0f, screenSizeVertical); glutInitWindowPosition(0, 0);
     WindowID1 = glutCreateWindow("3D Tree Using Recursion");
     init();
     glutReshapeFunc(reshape);
@@ -158,7 +163,9 @@ int main(int argc, char **argv) {
 
     glutDisplayFunc(display);
 
+    createWindowModifier();
     createWindowCamera();
+
     glutDisplayFunc(render);
     glutMainLoop();
 
