@@ -7,6 +7,7 @@ static double colors[6][3] = {
     {0.0f, 1.0f, 1.0f}      // yellow
 };
 
+static int slicesObj = 20;
 int screenSizeHorizontal, screenSizeVertical;
 GLint WindowID1, WindowID2, WindowID3;
 
@@ -44,4 +45,77 @@ void GetDesktopResolution() {
    // (horizontal, vertical)
    screenSizeHorizontal = desktop.right;
    screenSizeVertical = desktop.bottom;
+}
+
+struct Point {
+    double x, y, z;
+    Point() {}
+    Point (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {}
+
+    void pprint() {
+        cout << x << " " << y << " " << z << endl;
+    }
+};
+
+struct Cylinder {
+    vector<Point> bot;
+    vector<Point> top;
+
+    Cylinder() {}
+
+    void add(Point b, Point t) {
+        bot.pb(b);
+        top.pb(t);
+    }
+};
+
+
+vector<Cylinder> vCylinders;
+
+void toOBJ() {
+    freopen("Tree.obj", "w", stdout);
+    cout << fixed << setprecision(5) << endl;
+
+    // Save all vertices for each cylinder
+    FOR(i, 0, vCylinders.size()) {
+        FOR(j, 0, slicesObj) {
+            cout << "v "; vCylinders[i].bot[j].pprint();
+            cout << "v "; vCylinders[i].top[j].pprint();
+        }
+    }
+
+    int iSalto = slicesObj * 2;
+    FOR(i, 0, vCylinders.size()) {
+        // Bot Face
+        cout << "f ";
+        FOR(j, 0, slicesObj) {
+            cout << i * iSalto + j * 2 << " \n"[j == slicesObj - 1];
+        }
+
+        // Top Face
+        cout << "f ";
+        FOR(j, 0, slicesObj) {
+            cout << i * iSalto + j * 2 + 1 << " \n"[j == slicesObj - 1];
+        }
+
+        // Lateral Faces
+        FOR(j, 0, slicesObj) {
+            cout << "f " << i * iSalto + j * 2 << " " << i * iSalto + (j * 2 + 1) << " ";
+            cout << i * iSalto + (j * 2 + 1) % (2 * slicesObj) << " " << i * iSalto + (j * 2) % (2 * slicesObj) << endl;
+        }
+    }
+}
+
+void matrixMultiplication(double x, double y, double z, double h) {
+    double mat1[4][4];
+    double mat2[4][1] = { 0.0f, h, 0.0f};
+    double res[4][1];
+
+    FOR(i, 0, 4) {
+        FOR(j, 0, 1) {
+            FOR(k, 0, 4) {
+                res[i][j] += mat1[i][k] * mat2[k][j];
+            }
+        }
+    }
 }

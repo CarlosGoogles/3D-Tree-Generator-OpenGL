@@ -142,7 +142,7 @@ void displayCamera() {
 }
 
 void createWindowCamera() {
-    glutInitWindowSize (screenSizeHorizontal * 1.0f / 3.0f, screenSizeVertical / 2.0f);
+    glutInitWindowSize (screenSizeHorizontal * 1.0f / 3.0f, screenSizeVertical * 3.0f / 7.0f);
     glutInitWindowPosition (screenSizeHorizontal * 2.0f / 3.0f, 0);
     WindowID2 = glutCreateWindow("Camera"); // Create a camera
     glutDisplayFunc(displayCamera);   // Register display callback

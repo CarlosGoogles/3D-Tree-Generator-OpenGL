@@ -2,87 +2,81 @@
 #include <GL/glut.h>
 
 #define FOR(i, a, b) for(int i=int(a); i<int(b); i++)
+#define pb push_back
 
 using namespace std;
 
 typedef pair<int, int> ii;
+
+void reCreateTree();
 
 #include "Utility.h"
 #include "CameraWindow.h"
 #include "ModifierWindow.h"
 
 GLuint makeaTree;
-//double x,y,z;
-// angle for rotating triangle
-double angle = 0.0f;
-// actual vector representing the camera's direction
-// double lx = 0.0f, lz = -1.0f;
-// XZ position of the camera
-// double x = 0.0f, z = 5.0f, y;
 
 void makeCylinder(double height, double base) {
     int randd = rand() % 50 + 20;
     GLUquadric *obj = gluNewQuadric();
     //gluQuadricDrawStyle(obj, GLU_LINE);
-    glColor3f( 0.64f, 0.16, 0.16f);glPushMatrix();
-    glRotatef(-90.0f, 1.00, 0.0f, 0.0f);
-    gluCylinder(obj, base, base - (0.2f * base), height, 20.0f, 20.0f);
+    glColor3f( 0.64f, 0.16f, 0.16f);
+    glPushMatrix();
+        glRotatef(-90.0f, 1.00f, 0.0f, 0.0f);
+        gluCylinder(obj, base, 0.8f * base, height, 20.0f, 20.0f);
     glPopMatrix();
     glutSwapBuffers();
 }
 
 
 void makeTree(double height, double base){
-    int randy = 0;
     double angle;
     makeCylinder(height, base);
     glTranslatef(0.0f, height, 0.0f);
     height -= height * 0.2f;
     base -= base * 0.3f;
 
-    FOR(a, 0, 3) {
+    int ramas = rand() % 3 + 3;
+    FOR(a, 0, ramas) {
         angle = rand() % 50 + 20;
         if (angle > 48)
             angle = -(rand() % 50 + 20);
         if (height > 1) {
-            randy = rand() % 50 + 20;
             glPushMatrix();
-            glRotatef(angle, 1, 0, 1);
+            int randy = rand() % 2;
+            if(randy % 2 == 0){
+                glRotatef(angle, 1, randy, 1);
+            }
+            else{
+                glRotatef(angle, 1, (- randy), 1);
+            }
             makeTree(height,base);
             glPopMatrix();
         }
-        else glColor3f(0.0f, 1.0f / a, 0.0f); glutSolidSphere(0.2f, 10, 10);
     }
+    glColor3f(0.0f, 1.0f / (rand() % 3 + 1), 0.0f);
+    glutSolidSphere(0.2f, 10, 10);
+
 }
 
-void init(void) {
+void reCreateTree() {
+    glutSetWindow(WindowID1);
+
+    // clear the draw buffer .
+    glClear(GL_COLOR_BUFFER_BIT);   // Erase everything
+
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
-    makeTree(4, 0.2f);
+    makeTree(heightObj, baseObj);
     glEndList();
 }
 
-/*
-void keyboard(unsigned char key, int x, int y) {
-    switch (key) {
-    case 'x':
-        x += 10.0f;
-        glutPostRedisplay();
-        break;
-    case 'y':
-        y += 10.0f;
-        glutPostRedisplay();
-        break;
-    case 'z':
-        z += 10.0f;
-        glutPostRedisplay();
-        break;
-    }
+void init(void) {
+    reCreateTree();
 }
-*/
 
 void display() {
     glutSetWindow(WindowID1);
@@ -95,43 +89,15 @@ void display() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-        //glRotatef(camaraMov[0], 1.0f, 0.0f, 0.0f);
-        //glRotatef(camaraMov[1], 0.0f, 1.0f, 0.0f);
-        //glRotatef(camaraMov[2], 0.0f, 0.0f, 1.0f);
+        glRotatef(angsObj[0], 1.0f, 0.0f, 0.0f);
+        glRotatef(angsObj[1], 0.0f, 1.0f, 0.0f);
+        glRotatef(angsObj[2], 0.0f, 0.0f, 1.0f);
         glCallList(makeaTree);
 
     glPopMatrix();
     glutSwapBuffers();
 }
 
-void processNormalKeys(unsigned char key, int x, int y) {
-    if (key == 27)  exit(0);
-}
-
-void processSpecialKeys(int key, int xx, int yy) {
-    double fraction = 0.1f;
-
-    switch (key) {
-        case GLUT_KEY_LEFT :
-            angle -= 0.41f;
-            //lx = sin(angle);
-            //lz = -cos(angle);
-            break;
-        case GLUT_KEY_RIGHT :
-            angle += 0.41f;
-            //lx = sin(angle);
-            //lz = -cos(angle);
-            break;
-        case GLUT_KEY_UP :
-            //x += lx * fraction;
-            //z += lz * fraction;
-            break;
-        case GLUT_KEY_DOWN :
-            //x -= lx * fraction;
-            //z -= lz * fraction;
-            break;
-    }
-}
 
 void reshape(int w, int h) {
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
@@ -158,8 +124,6 @@ int main(int argc, char **argv) {
     WindowID1 = glutCreateWindow("3D Tree Using Recursion");
     init();
     glutReshapeFunc(reshape);
-    glutKeyboardFunc(processNormalKeys);
-    glutSpecialFunc(processSpecialKeys);
 
     glutDisplayFunc(display);
 
