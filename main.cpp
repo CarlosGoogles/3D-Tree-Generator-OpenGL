@@ -23,7 +23,7 @@ void makeCylinder(double height, double base) {
     glColor3f( 0.64f, 0.16f, 0.16f);
     glPushMatrix();
         glRotatef(-90.0f, 1.00f, 0.0f, 0.0f);
-        gluCylinder(obj, base, 0.8f * base, height, 20.0f, 20.0f);
+        gluCylinder(obj, base, base-(0.2f * base), height, 20.0f, 20.0f);
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -43,7 +43,7 @@ void makeTree(double height, double base){
             angle = -(rand() % 50 + 20);
         if (height > 1) {
             glPushMatrix();
-            int randy = rand() % 2;
+            int randy = rand() % 4;
             if(randy % 2 == 0){
                 glRotatef(angle, 1, randy, 1);
             }
