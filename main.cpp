@@ -81,11 +81,21 @@ void keyboard(unsigned char key, int x, int y) {
 
 void display() {
     glutSetWindow(WindowID1);
+
+    double lx = sin(camaraRot[0]);
+    double lz = -cos(camaraRot[2]);
+
+    glLoadIdentity();
+    glRotatef(-camaraRot[2], 0.0f, 0.0f, 1.0f);
+    glRotatef(-camaraRot[1], 0.0f, 1.0f, 0.0f);
+    glRotatef(-camaraRot[0], 1.0f, 0.0f, 0.0f);
+    glTranslatef(-camaraMov[0], -camaraMov[1], -camaraMov[2]);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-        glRotatef(camaraMov[0], 1.0f, 0.0f, 0.0f);
-        glRotatef(camaraMov[1], 0.0f, 1.0f, 0.0f);
-        glRotatef(camaraMov[2], 0.0f, 0.0f, 1.0f);
+        //glRotatef(camaraMov[0], 1.0f, 0.0f, 0.0f);
+        //glRotatef(camaraMov[1], 0.0f, 1.0f, 0.0f);
+        //glRotatef(camaraMov[2], 0.0f, 0.0f, 1.0f);
         glCallList(makeaTree);
 
     glPopMatrix();
@@ -139,7 +149,7 @@ void render() {
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize (1200, 800); glutInitWindowPosition(0,0);
+    glutInitWindowSize (600, 400); glutInitWindowPosition(0,0);
     WindowID1 = glutCreateWindow("3D Tree Using Recursion");
     init();
     glutReshapeFunc(reshape);
