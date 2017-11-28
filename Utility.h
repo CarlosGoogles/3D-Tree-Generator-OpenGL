@@ -56,6 +56,33 @@ void createSphere(double x, double y, double z, double r) {
     }
 }
 
+void createCylinder(double r, double R, double h, Matrix m) {
+    double theta = 0.0f;
+    glColor3d( 0.64d, 0.16d, 0.16d);
+    //cout << r << " " << R << " " << h << endl;
+
+
+    Cylinder cyl;
+    FOR(i, 0, slicesObj) {
+        glBegin(GL_QUAD_STRIP);
+        FOR(j, 0, slicesObj) {
+            Matrix aux1 = m * Matrix::createTranslation(R * cos(theta), 0, R * sin(theta));
+            Matrix aux2 = m * Matrix::createTranslation(r * cos(theta), h, r * sin(theta));
+
+            cyl.bot.pb(Point(aux1.mat[0][3], aux1.mat[1][3], aux1.mat[2][3]));
+            cyl.top.pb(Point(aux2.mat[0][3], aux2.mat[1][3], aux2.mat[2][3]));
+
+            glVertex3f(aux1.mat[0][3], aux1.mat[1][3], aux1.mat[2][3]);
+            glVertex3f(aux2.mat[0][3], aux2.mat[1][3], aux2.mat[2][3]);
+            theta += (2.0 * PI) / slicesObj;
+        }
+
+        glEnd();
+    }
+
+    vCylinders.pb(cyl);
+}
+
 // Get the horizontal and vertical screen sizes in pixel
 // https://stackoverflow.com/questions/8690619/how-to-get-screen-resolution-in-c
 void GetDesktopResolution() {
@@ -71,36 +98,7 @@ void GetDesktopResolution() {
    screenSizeVertical = desktop.bottom;
 }
 
-struct Point {
-    double x, y, z;
-    Point() {}
-    Point (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {}
 
-    void pprint() {
-        cout << x << " " << y << " " << z << endl;
-    }
-};
-
-struct Cylinder {
-    vector<Point> bot;
-    vector<Point> top;
-
-    Cylinder() {}
-
-    void add(Point b, Point t) {
-        bot.pb(b);
-        top.pb(t);
-    }
-};
-
-struct Sphere {
-    vector<Point> p;
-
-    Sphere();
-};
-
-
-vector<Cylinder> vCylinders;
 
 void toOBJ() {
     freopen("Tree.obj", "w", stdout);

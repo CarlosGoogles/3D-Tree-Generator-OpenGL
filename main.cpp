@@ -12,8 +12,9 @@ typedef pair<int, int> ii;
 
 void reCreateTree();
 
-#include "Utility.h"
+#include "Geometry.h"
 #include "Matrix.h"
+#include "Utility.h"
 #include "CameraWindow.h"
 #include "ModifierWindow.h"
 
@@ -24,30 +25,31 @@ void makeCylinder(double height, double base) {
     GLUquadric *obj = gluNewQuadric();
     //gluQuadricDrawStyle(obj, GLU_LINE);
     glColor3d( 0.64d, 0.16d, 0.16d);
-    //glPushMatrix();
-        //glRotated(-90.0d, 1.00d, 0.0d, 0.0d);
+    glPushMatrix();
+        glRotated(-90.0d, 1.00d, 0.0d, 0.0d);
         gluCylinder(obj, base, 0.8d * base, height, 20.0d, 20.0d);
     glPopMatrix();
     glutSwapBuffers();
 }
 
 Matrix matrizInitial;
-
+static int cant = 1;
 void makeTree(double height, double base, const bool b, Matrix matrizActual) {
 
-    makeCylinder(height, base);
+    // makeCylinder(height, base);
 
     //glTranslated(0.0d, height, 0.0d);
+    createCylinder(base, 0.8d * base, height, matrizActual);
     Matrix matrizMoved = matrizActual;
     matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
-    matrizMoved.pprint();
+    //matrizMoved.pprint();
 
-    height -= height * 0.2d;
-    base -= base * 0.3d;
-
+    height = height * 0.8d;
+    base = base * 0.7d;
+    cant ++;
     int ramas = rand() % 3 + 3;
     if (b)  ramas = 6;
-
+    cant ++;
     FOR(a, 0, ramas) {
         double angle = rand() % 50 + 20.0;
         if (angle > 48.0d)
@@ -60,7 +62,7 @@ void makeTree(double height, double base, const bool b, Matrix matrizActual) {
             if (randy % 2 == 0){
                 randy = -randy;
             }
-            //glRotated(angle, 1.0d, 0.8, 1.0d);
+            // glRotated(angle, 1.0d, 0.8, 1.0d);
             matrizCycle = matrizCycle * Matrix::createRotationMatrix(1.0d, 0.8d, 1.0d, angle * PI / 180.d);
             makeTree(height, base, false, matrizCycle);
             //glPopMatrix();
@@ -71,6 +73,51 @@ void makeTree(double height, double base, const bool b, Matrix matrizActual) {
 
     matrizMoved = matrizMoved * Matrix::originalPos();
     createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
+    // drawStrokeText(to_string(cant ++), matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.008f, 0.008f, 0.0f, colors[(cant % 5 + 1)]);
+    // glutSolidSphere(0.2d, 10.0d, 10.0d);
+    cant --;
+}
+
+void makeTree2(double height, double base, const bool b, Matrix matrizActual) {
+
+    makeCylinder(height, base);
+
+    glTranslated(0.0d, height, 0.0d);
+    //createCylinder(base, 0.8d * base, height, matrizActual);
+    Matrix matrizMoved = matrizActual;
+    matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
+    //matrizMoved.pprint();
+
+    height -= height * 0.2f;
+    base -= base * 0.3f;
+
+    int ramas = rand() % 3 + 3;
+    if (b)  ramas = 6;
+    cant ++;
+    FOR(a, 0, ramas) {
+        double angle = rand() % 50 + 20.0;
+        if (angle > 48.0d)
+            angle = -(rand() % 50 + 20.0);
+        if (height > 1.0d) {
+            Matrix matrizCycle = matrizMoved;
+
+            glPushMatrix();
+            int randy = rand() % 4;
+            if (randy % 2 == 0){
+                randy = -randy;
+            }
+             glRotated(angle, 1.0d, 0.8, 1.0d);
+            matrizCycle = matrizCycle * Matrix::createRotationMatrix(1.0d, 0.8d, 1.0d, angle * PI / 180.d);
+            makeTree2(height, base, false, matrizCycle);
+            glPopMatrix();
+        }
+    }
+    glColor3d(0.0d, 1.0d / (rand() % 4 + 1.0d), 0.0d);
+     createSphere(0, 0, 0, 0.2d);
+
+    matrizMoved = matrizMoved * Matrix::originalPos();
+    // createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
+    // drawStrokeText(to_string(cant ++), matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.008f, 0.008f, 0.0f, colors[(cant % 5 + 1)]);
     // glutSolidSphere(0.2d, 10.0d, 10.0d);
 }
 
@@ -83,12 +130,15 @@ void reCreateTree() {
     // clear the draw budder .
     glClear(GL_COLOR_BUFFER_BIT);   // Erase everything
 
+
     glClearColor(1.0d, 1.0d, 1.0d, 1.0d);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
-    makeTree(2.7, baseObj, true, matrizInitial);
+
+    if (1)  makeTree(3, baseObj, true, matrizInitial);
+    else    makeTree2(2, baseObj, true, matrizInitial);
     glEndList();
 
 
