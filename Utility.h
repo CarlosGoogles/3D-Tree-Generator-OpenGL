@@ -7,6 +7,8 @@ static double colors[6][3] = {
     {0.0f, 1.0f, 1.0f}      // yellow
 };
 
+
+
 static int slicesObj = 20;
 int screenSizeHorizontal, screenSizeVertical;
 GLint WindowID1, WindowID2, WindowID3;
@@ -30,6 +32,28 @@ void drawStrokeText(string s, double x, double y, double z, double sx, double sy
             glutStrokeCharacter(GLUT_STROKE_ROMAN, s[i]);
         }
     glPopMatrix();
+}
+
+
+void createSphere(double x, double y, double z, double r) {
+    double theta = 0.0f, theta2 = 2.0 * PI / slicesObj;
+    double omega = 0.0f;
+
+    FOR(i, 0, slicesObj) {
+        omega = 0;
+        glBegin(GL_QUAD_STRIP);
+        FOR(j, 0, slicesObj) {
+                glVertex3f(x + r * cos(omega) * cos(theta), y + r * cos(omega) * sin(theta), z + r * sin(omega));
+                glVertex3f(x + r * cos(omega) * cos(theta2), y + r * cos(omega) * sin(theta2), z + r * sin(omega));
+                omega += (2.0 * PI) / slicesObj;
+        }
+        glVertex3f(x + r * cos(omega) * cos(theta), y + r * cos(omega) * sin(theta), z + r * sin(omega));
+        glVertex3f(x + r * cos(omega) * cos(theta2), y + r * cos(omega) * sin(theta2), z + r * sin(omega));
+        glEnd();
+
+        theta = theta2;
+        theta2 += 2.0 * PI / slicesObj;
+    }
 }
 
 // Get the horizontal and vertical screen sizes in pixel
@@ -69,6 +93,12 @@ struct Cylinder {
     }
 };
 
+struct Sphere {
+    vector<Point> p;
+
+    Sphere();
+};
+
 
 vector<Cylinder> vCylinders;
 
@@ -102,20 +132,6 @@ void toOBJ() {
         FOR(j, 0, slicesObj) {
             cout << "f " << i * iSalto + j * 2 << " " << i * iSalto + (j * 2 + 1) << " ";
             cout << i * iSalto + (j * 2 + 1) % (2 * slicesObj) << " " << i * iSalto + (j * 2) % (2 * slicesObj) << endl;
-        }
-    }
-}
-
-void matrixMultiplication(double x, double y, double z, double h) {
-    double mat1[4][4];
-    double mat2[4][1] = { 0.0f, h, 0.0f};
-    double res[4][1];
-
-    FOR(i, 0, 4) {
-        FOR(j, 0, 1) {
-            FOR(k, 0, 4) {
-                res[i][j] += mat1[i][k] * mat2[k][j];
-            }
         }
     }
 }

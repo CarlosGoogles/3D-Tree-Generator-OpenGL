@@ -4,6 +4,8 @@
 #define FOR(i, a, b) for(int i=int(a); i<int(b); i++)
 #define pb push_back
 
+#define PI 3.14159265358979323846
+
 using namespace std;
 
 typedef pair<int, int> ii;
@@ -11,6 +13,7 @@ typedef pair<int, int> ii;
 void reCreateTree();
 
 #include "Utility.h"
+#include "Matrix.h"
 #include "CameraWindow.h"
 #include "ModifierWindow.h"
 
@@ -20,58 +23,75 @@ void makeCylinder(double height, double base) {
     int randd = rand() % 50 + 20;
     GLUquadric *obj = gluNewQuadric();
     //gluQuadricDrawStyle(obj, GLU_LINE);
-    glColor3f( 0.64f, 0.16f, 0.16f);
-    glPushMatrix();
-        glRotatef(-90.0f, 1.00f, 0.0f, 0.0f);
-        gluCylinder(obj, base, base-(0.2f * base), height, 20.0f, 20.0f);
+    glColor3d( 0.64d, 0.16d, 0.16d);
+    //glPushMatrix();
+        //glRotated(-90.0d, 1.00d, 0.0d, 0.0d);
+        gluCylinder(obj, base, 0.8d * base, height, 20.0d, 20.0d);
     glPopMatrix();
     glutSwapBuffers();
 }
 
+Matrix matrizInitial;
 
-void makeTree(double height, double base){
-    double angle;
+void makeTree(double height, double base, const bool b, Matrix matrizActual) {
+
     makeCylinder(height, base);
-    glTranslatef(0.0f, height, 0.0f);
-    height -= height * 0.2f;
-    base -= base * 0.3f;
+
+    //glTranslated(0.0d, height, 0.0d);
+    Matrix matrizMoved = matrizActual;
+    matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
+    matrizMoved.pprint();
+
+    height -= height * 0.2d;
+    base -= base * 0.3d;
 
     int ramas = rand() % 3 + 3;
+    if (b)  ramas = 6;
+
     FOR(a, 0, ramas) {
-        angle = rand() % 50 + 20;
-        if (angle > 48)
-            angle = -(rand() % 50 + 20);
-        if (height > 1) {
-            glPushMatrix();
+        double angle = rand() % 50 + 20.0;
+        if (angle > 48.0d)
+            angle = -(rand() % 50 + 20.0);
+        if (height > 1.0d) {
+            Matrix matrizCycle = matrizMoved;
+
+            //glPushMatrix();
             int randy = rand() % 4;
-            if(randy % 2 == 0){
-                glRotatef(angle, 1, randy, 1);
+            if (randy % 2 == 0){
+                randy = -randy;
             }
-            else{
-                glRotatef(angle, 1, (- randy), 1);
-            }
-            makeTree(height,base);
-            glPopMatrix();
+            //glRotated(angle, 1.0d, 0.8, 1.0d);
+            matrizCycle = matrizCycle * Matrix::createRotationMatrix(1.0d, 0.8d, 1.0d, angle * PI / 180.d);
+            makeTree(height, base, false, matrizCycle);
+            //glPopMatrix();
         }
     }
-    glColor3f(0.0f, 1.0f / (rand() % 3 + 1), 0.0f);
-    glutSolidSphere(0.2f, 10, 10);
+    glColor3d(0.0d, 1.0d / (rand() % 4 + 1.0d), 0.0d);
+    // createSphere(0, 0, 0, 0.2d);
 
+    matrizMoved = matrizMoved * Matrix::originalPos();
+    createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
+    // glutSolidSphere(0.2d, 10.0d, 10.0d);
 }
 
 void reCreateTree() {
+    matrizInitial = Matrix::identity();
+    matrizInitial.pprint();
+
     glutSetWindow(WindowID1);
 
-    // clear the draw buffer .
+    // clear the draw budder .
     glClear(GL_COLOR_BUFFER_BIT);   // Erase everything
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(1.0d, 1.0d, 1.0d, 1.0d);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
-    makeTree(heightObj, baseObj);
+    makeTree(2.7, baseObj, true, matrizInitial);
     glEndList();
+
+
 }
 
 void init(void) {
@@ -82,16 +102,16 @@ void display() {
     glutSetWindow(WindowID1);
 
     glLoadIdentity();
-    glRotatef(-camaraRot[2], 0.0f, 0.0f, 1.0f);
-    glRotatef(-camaraRot[1], 0.0f, 1.0f, 0.0f);
-    glRotatef(-camaraRot[0], 1.0f, 0.0f, 0.0f);
-    glTranslatef(-camaraMov[0], -camaraMov[1], -camaraMov[2]);
+    glRotated(-camaraRot[2], 0.0d, 0.0d, 1.0d);
+    glRotated(-camaraRot[1], 0.0d, 1.0d, 0.0d);
+    glRotated(-camaraRot[0], 1.0d, 0.0d, 0.0d);
+    glTranslated(-camaraMov[0], -camaraMov[1], -camaraMov[2]);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-        glRotatef(angsObj[0], 1.0f, 0.0f, 0.0f);
-        glRotatef(angsObj[1], 0.0f, 1.0f, 0.0f);
-        glRotatef(angsObj[2], 0.0f, 0.0f, 1.0f);
+        glRotated(angsObj[0], 1.0d, 0.0d, 0.0d);
+        glRotated(angsObj[1], 0.0d, 1.0d, 0.0d);
+        glRotated(angsObj[2], 0.0d, 0.0d, 1.0d);
         glCallList(makeaTree);
 
     glPopMatrix();
@@ -103,10 +123,10 @@ void reshape(int w, int h) {
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(30.0f, (GLdouble) w/(GLdouble) h, 0.001f, 1000.0f);
+    gluPerspective(30.0d, (GLdouble) w/(GLdouble) h, 0.001d, 1000.0d);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(0.0f, -8.0f, -50.0f);
+    glTranslated(0.0d, -8.0d, -50.0d);
 }
 
 void render() {
@@ -120,7 +140,7 @@ int main(int argc, char **argv) {
 
     glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize (screenSizeHorizontal * 2.0f / 3.0f, screenSizeVertical); glutInitWindowPosition(0, 0);
+    glutInitWindowSize (screenSizeHorizontal * 2.0d / 3.0d, screenSizeVertical); glutInitWindowPosition(0, 0);
     WindowID1 = glutCreateWindow("3D Tree Using Recursion");
     init();
     glutReshapeFunc(reshape);
