@@ -39,9 +39,15 @@ void makeTree(double height, double base, const bool b, Matrix matrizActual) {
     // makeCylinder(height, base);
 
     //glTranslated(0.0d, height, 0.0d);
+
+    Matrix matrixAux = matrizActual, matrizMoved = matrizActual;
+    matrixAux = matrizMoved * Matrix::createTranslation(0, height, 0);
+    // createCylinder(base, 0.8d * base, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), matrizActual);
+    // matrizMoved = matrizMoved * Matrix::createTranslation(0, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), 0);
+
     createCylinder(base, 0.8d * base, height, matrizActual);
-    Matrix matrizMoved = matrizActual;
     matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
+    cout << height << " " << matrixAux.mat[1][3] << " " << matrizActual.mat[1][3] << " " << matrixAux.mat[1][3] - matrizActual.mat[1][3] << endl;
     //matrizMoved.pprint();
 
     height = height * 0.8d;
@@ -137,7 +143,7 @@ void reCreateTree() {
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
 
-    if (1)  makeTree(3, baseObj, true, matrizInitial);
+    if (1)  makeTree(2, baseObj, true, matrizInitial);
     else    makeTree2(2, baseObj, true, matrizInitial);
     glEndList();
 
