@@ -21,7 +21,7 @@ void reCreateTree();
 GLuint makeaTree;
 
 void makeCylinder(double height, double base) {
-    int randd = rand() % 50 + 20;
+    // int randd = rand() % 50 + 20;
     GLUquadric *obj = gluNewQuadric();
     //gluQuadricDrawStyle(obj, GLU_LINE);
     glColor3d( 0.64d, 0.16d, 0.16d);
@@ -32,49 +32,55 @@ void makeCylinder(double height, double base) {
     glutSwapBuffers();
 }
 
+
+static int rrrand(int mod) {
+    return rand() % mod;
+}
+
 Matrix matrizInitial;
 static int cant = 1;
-void makeTree(double height, double base, const bool b, Matrix matrizActual) {
-
+void makeTree(double height, double base, const bool b, Matrix matrizActual, int lvl) {
+    // if (!lvl) return;
     // makeCylinder(height, base);
 
     //glTranslated(0.0d, height, 0.0d);
 
     Matrix matrixAux = matrizActual, matrizMoved = matrizActual;
-    matrixAux = matrizMoved * Matrix::createTranslation(0, height, 0);
+    matrizMoved = matrizMoved * Matrix::createTranslation(0, height * (1 - lvl * 0.05d), 0);
     // createCylinder(base, 0.8d * base, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), matrizActual);
     // matrizMoved = matrizMoved * Matrix::createTranslation(0, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), 0);
 
-    createCylinder(base, 0.8d * base, height, matrizActual);
-    matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
-    cout << height << " " << matrixAux.mat[1][3] << " " << matrizActual.mat[1][3] << " " << matrixAux.mat[1][3] - matrizActual.mat[1][3] << endl;
+    createCylinder(base, 0.8d * base, height * (1 - lvl * 0.05d), matrizActual);
+    // matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
+    // cout << height << " " << matrixAux.mat[1][3] << " " << matrizActual.mat[1][3] << " " << matrixAux.mat[1][3] - matrizActual.mat[1][3] << endl;
     //matrizMoved.pprint();
 
-    height = height * 0.8d;
-    base = base * 0.7d;
+    height -= height * 0.2f;
+    base -= base * 0.3f;
     cant ++;
-    int ramas = rand() % 3 + 3;
+    int ramas = rrrand(3) + 3;
     if (b)  ramas = 6;
     cant ++;
     FOR(a, 0, ramas) {
-        double angle = rand() % 50 + 20.0;
-        if (angle > 48.0d)
-            angle = -(rand() % 50 + 20.0);
+        double angle = rrrand(30) + 10.0;
+        //if (angle > 48.0d)
+        //    angle = -(rrrand(30) + 20.0);
         if (height > 1.0d) {
             Matrix matrizCycle = matrizMoved;
 
             //glPushMatrix();
-            int randy = rand() % 4;
+            int randy = rrrand(4);
             if (randy % 2 == 0){
-                randy = -randy;
+                angle = -angle;
             }
+            // cout << angle << endl;
             // glRotated(angle, 1.0d, 0.8, 1.0d);
-            matrizCycle = matrizCycle * Matrix::createRotationMatrix(1.0d, 0.8d, 1.0d, angle * PI / 180.d);
-            makeTree(height, base, false, matrizCycle);
+            matrizCycle = matrizCycle * Matrix::createRotationMatrix(0.8d, 0.8d, 0.8d, angle * PI / 180.d);
+            makeTree(height, base, false, matrizCycle, lvl + 1);
             //glPopMatrix();
         }
     }
-    glColor3d(0.0d, 1.0d / (rand() % 4 + 1.0d), 0.0d);
+    glColor3d(0.0d, 1.0d / (rrrand(4) + 1.0d), 0.0d);
     // createSphere(0, 0, 0, 0.2d);
 
     matrizMoved = matrizMoved * Matrix::originalPos();
@@ -84,7 +90,9 @@ void makeTree(double height, double base, const bool b, Matrix matrizActual) {
     cant --;
 }
 
-void makeTree2(double height, double base, const bool b, Matrix matrizActual) {
+
+void makeTree2(double height, double base, const bool b, Matrix matrizActual, int lvl) {
+    if (!lvl)   return;
 
     makeCylinder(height, base);
 
@@ -97,28 +105,29 @@ void makeTree2(double height, double base, const bool b, Matrix matrizActual) {
     height -= height * 0.2f;
     base -= base * 0.3f;
 
-    int ramas = rand() % 3 + 3;
+    int ramas = rrrand(3) + 3;
     if (b)  ramas = 6;
     cant ++;
     FOR(a, 0, ramas) {
-        double angle = rand() % 50 + 20.0;
-        if (angle > 48.0d)
-            angle = -(rand() % 50 + 20.0);
+        double angle = rrrand(50) + 20.0;
+        //if (angle > 48.0d)
+        //    angle = -(rrrand(50) + 20.0);
         if (height > 1.0d) {
             Matrix matrizCycle = matrizMoved;
 
             glPushMatrix();
-            int randy = rand() % 4;
+            int randy = rrrand(4);
             if (randy % 2 == 0){
                 randy = -randy;
             }
-             glRotated(angle, 1.0d, 0.8, 1.0d);
-            matrizCycle = matrizCycle * Matrix::createRotationMatrix(1.0d, 0.8d, 1.0d, angle * PI / 180.d);
-            makeTree2(height, base, false, matrizCycle);
+            //cout << angle << endl;
+            glRotated(angle, 1.0d, 0.8, 1.0d);
+            matrizCycle = matrizCycle * Matrix::createRotationMatrix(0.3d, 0.3d, 0.3d, angle * PI / 180.d);
+            makeTree2(height, base, false, matrizCycle, lvl - 1);
             glPopMatrix();
         }
     }
-    glColor3d(0.0d, 1.0d / (rand() % 4 + 1.0d), 0.0d);
+    glColor3d(0.0d, 1.0d / (rrrand(4) + 1.0d), 0.0d);
      createSphere(0, 0, 0, 0.2d);
 
     matrizMoved = matrizMoved * Matrix::originalPos();
@@ -143,8 +152,9 @@ void reCreateTree() {
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
 
-    if (1)  makeTree(2, baseObj, true, matrizInitial);
-    else    makeTree2(2, baseObj, true, matrizInitial);
+    int lvl = 2;
+    if (1)  makeTree(heightObj, baseObj, true, matrizInitial, lvl);
+    else    makeTree2(2, baseObj, true, matrizInitial, -2);
     glEndList();
 
 

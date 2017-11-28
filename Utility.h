@@ -65,9 +65,9 @@ void createCylinder(double r, double R, double h, Matrix m) {
     Cylinder cyl;
     FOR(i, 0, slicesObj) {
         glBegin(GL_QUAD_STRIP);
-        FOR(j, 0, slicesObj) {
+        FOR(j, 0, slicesObj + 1) {
             Matrix aux1 = m * Matrix::createTranslation(R * cos(theta), 0, R * sin(theta));
-            Matrix aux2 = m * Matrix::createTranslation(r * cos(theta), h, r * sin(theta));
+            Matrix aux2 = m * Matrix::createTranslation(r * cos(theta) * 0.7, h, r * sin(theta) * 0.7);
 
             cyl.bot.pb(Point(aux1.mat[0][3], aux1.mat[1][3], aux1.mat[2][3]));
             cyl.top.pb(Point(aux2.mat[0][3], aux2.mat[1][3], aux2.mat[2][3]));
