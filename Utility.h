@@ -114,7 +114,7 @@ void createSphere(double x, double y, double z, double r, double color[]) {
         theta = theta2;
         theta2 += 2.0 * PI / slicesObj;
     }
-    //vSpheres.pb(ssp);
+    vSpheres.pb(ssp);
 }
 
 
@@ -146,7 +146,7 @@ void createCylinder(double r, double R, double h, Matrix m, double color[], doub
         cout << "glEnd" << endl;
     }
 
-    //vCylinders.pb(cyl);
+    vCylinders.pb(cyl);
 }
 
 // Get the horizontal and vertical screen sizes in pixel
