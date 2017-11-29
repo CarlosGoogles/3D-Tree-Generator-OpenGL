@@ -7,10 +7,11 @@ struct Point {
         cout << x << " " << y << " " << z << endl;
     }
 };
+typedef vector<Point> vp;
 
 struct Cylinder {
-    vector<Point> bot;
-    vector<Point> top;
+    vp bot;
+    vp top;
 
     Cylinder() {}
 
@@ -21,9 +22,12 @@ struct Cylinder {
 };
 
 struct Sphere {
-    vector<Point> p;
+    vector<vp> v;
 
-    Sphere();
+    Sphere() {}
+    void add(vp p) {
+        v.pb(p);
+    }
 };
 
 

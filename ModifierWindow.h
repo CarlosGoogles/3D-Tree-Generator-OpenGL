@@ -4,10 +4,10 @@ static const double arrButtonMin2[8][4] = {
     {-0.90f,  0.25f, -0.70f,  0.05f},
     {-0.90f, -0.05f, -0.70f, -0.25f},
     {-0.90f, -0.35f, -0.70f, -0.55f},
-    { 0.10f,  0.55f,  0.30f,  0.35f},
-    { 0.10f,  0.25f,  0.30f,  0.05f},
-    { 0.10f, -0.05f,  0.30f, -0.25f},
-    { 0.10f, -0.35f,  0.30f, -0.55f},
+    {-0.05f,  0.55f,  0.15f,  0.35f},
+    {-0.05f,  0.25f,  0.15f,  0.05f},
+    {-0.05f, -0.05f,  0.15f, -0.25f},
+    {-0.05f, -0.35f,  0.15f, -0.55f},
 };
 
 static const double arrPlusSign2[8][4] = {
@@ -26,22 +26,21 @@ static const double namesPosModifier[8][3] = {
     {-0.65f,  0.10f, 0.00f},
     {-0.65f, -0.20f, 0.00f},
     {-0.65f, -0.50f, 0.00f},
-    { 0.35f,  0.40f, 0.00f},
-    { 0.35f,  0.10f, 0.00f},
-    { 0.35f, -0.20f, 0.00f},
-    { 0.35f, -0.50f, 0.00f},
+    { 0.20f,  0.40f, 0.00f},
+    { 0.20f,  0.10f, 0.00f},
+    { 0.20f, -0.20f, 0.00f},
+    { 0.20f, -0.50f, 0.00f},
 };
 
 static const double btnRender[4] = {-0.90f, -0.65f, -0.20f, -0.85f};
 
-static const string names[8] = { "rot x", "rot y", "rot z", "", "base", "height", "angle", "rand" };
+static const string names[8] = { "rot x", "rot y", "rot z", "", "base", "height", "branches", "slices" };
 
 static double angsObj[3] = { 0.0f, 0.0f, 0.0f };
-static double angleObj = 40.0f;
 static double baseObj = 0.4f;
 static double heightObj = 4.0f;
-static double randyObj = 5.5f;
-static double valObj[8] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, angleObj, randyObj };
+static int branchesObj = 3;
+static double valObj[8] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj };
 
 static double modifierWindowWidth;
 static double modifierWindowHeight;
@@ -90,18 +89,18 @@ void mouseButtonPressedModifier(int button, int key, int x, int y) {
         valObj[pressed.first] = heightObj;
     }
     else if (pressed.first == 6) {
-        angleObj += pressed.second;
-        angleObj = min(60.0, angleObj);
-        angleObj = max(20.0, angleObj);
-        valObj[pressed.first] = angleObj;
+        branchesObj += pressed.second;
+        branchesObj = min(5, branchesObj);
+        branchesObj = max(2, branchesObj);
+        valObj[pressed.first] = branchesObj;
     }
     else if (pressed.first == 7) {
-        randyObj += pressed.second * 0.1f;
-        randyObj = min(9.0, randyObj);
-        randyObj = max(4.0, randyObj);
-        valObj[pressed.first] = randyObj;
+        slicesObj += pressed.second * 0.1f;
+        slicesObj = min(15, slicesObj);
+        slicesObj = max(3, slicesObj);
+        valObj[pressed.first] = slicesObj;
     }
-    else if (pressed.first == 8) {
+    else if (button == 0 && pressed.first == 8) {
         reCreateTree();
     }
 

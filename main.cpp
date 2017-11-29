@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <GL/glut.h>
+#define _ ios_base::sync_with_stdio(0), cin.tie(0), cin.tie(0), cout.tie(0), cout.precision(15);
 
 #define FOR(i, a, b) for(int i=int(a); i<int(b); i++)
 #define pb push_back
@@ -20,144 +21,61 @@ void reCreateTree();
 
 GLuint makeaTree;
 
-void makeCylinder(double height, double base) {
-    // int randd = rand() % 50 + 20;
-    GLUquadric *obj = gluNewQuadric();
-    //gluQuadricDrawStyle(obj, GLU_LINE);
-    glColor3d( 0.64d, 0.16d, 0.16d);
-    glPushMatrix();
-        glRotated(-90.0d, 1.00d, 0.0d, 0.0d);
-        gluCylinder(obj, base, 0.8d * base, height, 20.0d, 20.0d);
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
-
-static int rrrand(int mod) {
-    return rand() % mod;
-}
-
-Matrix matrizInitial;
-static int cant = 1;
 void makeTree(double height, double base, const bool b, Matrix matrizActual, int lvl) {
-    // if (!lvl) return;
-    // makeCylinder(height, base);
+    createCylinder(base, 0.8d * base, height * (1.0d - lvl * 0.08d), matrizActual);
 
-    //glTranslated(0.0d, height, 0.0d);
-
-    Matrix matrixAux = matrizActual, matrizMoved = matrizActual;
-    matrizMoved = matrizMoved * Matrix::createTranslation(0, height * (1 - lvl * 0.05d), 0);
-    // createCylinder(base, 0.8d * base, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), matrizActual);
-    // matrizMoved = matrizMoved * Matrix::createTranslation(0, min(matrixAux.mat[1][3] - matrizActual.mat[1][3], height), 0);
-
-    createCylinder(base, 0.8d * base, height * (1 - lvl * 0.05d), matrizActual);
-    // matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
-    // cout << height << " " << matrixAux.mat[1][3] << " " << matrizActual.mat[1][3] << " " << matrixAux.mat[1][3] - matrizActual.mat[1][3] << endl;
-    //matrizMoved.pprint();
+    Matrix matrizMoved = matrizActual * Matrix::createTranslation(0.0d, height * (1.0d - lvl * 0.08d), 0.0d);
 
     height -= height * 0.2f;
     base -= base * 0.3f;
-    cant ++;
-    int ramas = rrrand(3) + 3;
+    int ramas = Rand(3) + 3;
     if (b)  ramas = 6;
-    cant ++;
     FOR(a, 0, ramas) {
-        double angle = rrrand(30) + 10.0;
-        //if (angle > 48.0d)
-        //    angle = -(rrrand(30) + 20.0);
         if (height > 1.0d) {
+            double angle = Rand(30) + 10.0, x = 1, y = 1;
             Matrix matrizCycle = matrizMoved;
+            if (Rand(2) % 2 == 0)     angle = -angle;
+            if (Rand(2) % 2 == 0)     x = -x;
+            if (Rand(2) % 2 == 0)     y = -y;
 
-            //glPushMatrix();
-            int randy = rrrand(4);
-            if (randy % 2 == 0){
-                angle = -angle;
-            }
-            // cout << angle << endl;
-            // glRotated(angle, 1.0d, 0.8, 1.0d);
-            matrizCycle = matrizCycle * Matrix::createRotationMatrix(0.8d, 0.8d, 0.8d, angle * PI / 180.d);
+            matrizCycle = matrizCycle * Matrix::createRotationMatrix(x * 0.8d, y * 1.d, 0.8d, angle * PI / 180.d);
             makeTree(height, base, false, matrizCycle, lvl + 1);
-            //glPopMatrix();
         }
     }
-    glColor3d(0.0d, 1.0d / (rrrand(4) + 1.0d), 0.0d);
-    // createSphere(0, 0, 0, 0.2d);
-
+    glColor3d(0.0d, 1.0d / (Rand(4) + 1.0d), 0.0d);
     matrizMoved = matrizMoved * Matrix::originalPos();
     createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
-    // drawStrokeText(to_string(cant ++), matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.008f, 0.008f, 0.0f, colors[(cant % 5 + 1)]);
-    // glutSolidSphere(0.2d, 10.0d, 10.0d);
-    cant --;
 }
 
-
-void makeTree2(double height, double base, const bool b, Matrix matrizActual, int lvl) {
-    if (!lvl)   return;
-
-    makeCylinder(height, base);
-
-    glTranslated(0.0d, height, 0.0d);
-    //createCylinder(base, 0.8d * base, height, matrizActual);
-    Matrix matrizMoved = matrizActual;
-    matrizMoved = matrizMoved * Matrix::createTranslation(0, height, 0);
-    //matrizMoved.pprint();
-
-    height -= height * 0.2f;
-    base -= base * 0.3f;
-
-    int ramas = rrrand(3) + 3;
-    if (b)  ramas = 6;
-    cant ++;
-    FOR(a, 0, ramas) {
-        double angle = rrrand(50) + 20.0;
-        //if (angle > 48.0d)
-        //    angle = -(rrrand(50) + 20.0);
-        if (height > 1.0d) {
-            Matrix matrizCycle = matrizMoved;
-
-            glPushMatrix();
-            int randy = rrrand(4);
-            if (randy % 2 == 0){
-                randy = -randy;
-            }
-            //cout << angle << endl;
-            glRotated(angle, 1.0d, 0.8, 1.0d);
-            matrizCycle = matrizCycle * Matrix::createRotationMatrix(0.3d, 0.3d, 0.3d, angle * PI / 180.d);
-            makeTree2(height, base, false, matrizCycle, lvl - 1);
-            glPopMatrix();
-        }
-    }
-    glColor3d(0.0d, 1.0d / (rrrand(4) + 1.0d), 0.0d);
-     createSphere(0, 0, 0, 0.2d);
-
-    matrizMoved = matrizMoved * Matrix::originalPos();
-    // createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
-    // drawStrokeText(to_string(cant ++), matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.008f, 0.008f, 0.0f, colors[(cant % 5 + 1)]);
-    // glutSolidSphere(0.2d, 10.0d, 10.0d);
-}
-
+static bool lastSession = true;
 void reCreateTree() {
-    matrizInitial = Matrix::identity();
-    matrizInitial.pprint();
+    vCylinders.clear();
+    vSpheres.clear();
 
     glutSetWindow(WindowID1);
 
     // clear the draw budder .
     glClear(GL_COLOR_BUFFER_BIT);   // Erase everything
 
-
     glClearColor(1.0d, 1.0d, 1.0d, 1.0d);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
+
+
     makeaTree = glGenLists(1);
     glNewList(makeaTree, GL_COMPILE);
 
-    int lvl = 2;
-    if (1)  makeTree(heightObj, baseObj, true, matrizInitial, lvl);
-    else    makeTree2(2, baseObj, true, matrizInitial, -2);
+    if (lastSession) {
+        lastSession = false;
+        loadLastSesion();
+    }
+    else {
+        freopen("last_session.lovelive", "w", stdout);
+        makeTree(heightObj, baseObj, true, Matrix::identity(), 0);
+        toOBJ();
+    }
+
     glEndList();
-
-
 }
 
 void init(void) {
