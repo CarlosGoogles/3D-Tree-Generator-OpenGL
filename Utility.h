@@ -22,8 +22,6 @@ static double colors[18][3] = {
 };
 
 
-
-static int slicesObj = 8;
 int screenSizeHorizontal, screenSizeVertical;
 GLint WindowID1, WindowID2, WindowID3;
 
@@ -52,6 +50,11 @@ void drawStrokeText(string s, double x, double y, double z, double sx, double sy
     glPopMatrix();
 }
 
+void updateVal() {
+    double valObj2[9] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj, (double)colorActLeaves };
+    FOR(i, 0, 9)    valObj[i] = valObj2[i];
+}
+
 void loadLastSesion() {
     freopen("last_session.lovelive", "r", stdin);
     cin >> baseObj >> heightObj >> branchesObj >> slicesObj >> colorActLeaves;
@@ -67,6 +70,8 @@ void loadLastSesion() {
         }
         glEnd();
     }
+    updateVal();
+    glutPostRedisplay();
 }
 
 void createSphere(double x, double y, double z, double r, double color[]) {

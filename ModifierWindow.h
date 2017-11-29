@@ -39,9 +39,6 @@ static const double btnRender[4] = {-0.90f, -0.65f, -0.20f, -0.85f};
 
 static const string names[9] = { "rot x", "rot y", "rot z", "", "base", "height", "branches", "slices", "color leaves" };
 
-static double angsObj[3] = { 0.0f, 0.0f, 0.0f };
-static double valObj[9] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj, (double)colorActLeaves };
-
 static double modifierWindowWidth;
 static double modifierWindowHeight;
 
@@ -107,7 +104,6 @@ void mouseButtonPressedModifier(int button, int key, int x, int y) {
     else if (button == 0 && pressed.first == 9) {
         reCreateTree();
     }
-
     glutPostRedisplay();
 }
 

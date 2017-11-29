@@ -15,7 +15,13 @@ static double baseObj = 0.3f;
 static double heightObj = 4.0f;
 static int branchesObj = 3;
 static int colorActLeaves = 7;
+static int slicesObj = 8;
+
 void reCreateTree();
+void displayModifier();
+
+static double angsObj[3] = { 0.0f, 0.0f, 0.0f };
+static double valObj[9] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj, (double)colorActLeaves };
 
 #include "Geometry.h"
 #include "Matrix.h"
@@ -75,7 +81,7 @@ void reCreateTree() {
     }
     else {
         freopen("last_session.lovelive", "w", stdout);
-        cout << baseObj << " " << heightObj << " " << branchesObj << " " << slicesObj << " " << colorActLeaves;
+        cout << baseObj << " " << heightObj << " " << branchesObj << " " << slicesObj << " " << colorActLeaves << endl;
         makeTree(heightObj, baseObj, true, Matrix::identity(), 0);
         toOBJ();
     }
