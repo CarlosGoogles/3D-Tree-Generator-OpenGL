@@ -1,10 +1,24 @@
-static double colors[6][3] = {
+static double colors[18][3] = {
     {0.0f, 0.0f, 0.0f},     // black
     {1.0f, 0.0f, 0.0f},     // red
     {0.0f, 1.0f, 0.0f},     // green
     {0.0f, 0.0f, 1.0f},     // blue
     {1.0f, 1.0f, 1.0f},     // white
-    {0.0f, 1.0f, 1.0f}      // yellow
+    {0.0f, 1.0f, 1.0f},     // light blue
+
+    {0.640000d, 0.160000d, 0.160000d}, // 6  - Tronco, marron
+
+    {0.000000d, 1.000000d, 0.000000d}, // 7  - Green
+    {0.137255d, 0.556863d, 0.419608d}, // 8  - SeaGreen
+    {0.137255d, 0.419608d, 0.556863d}, // 9  - SteelBlue
+    {0.650000d, 0.490000d, 0.240000d}, // 10 - Bronze2
+    {0.810000d, 0.710000d, 0.230000d}, // 11 - OldGold
+    {0.360000d, 0.200000d, 0.090000d}, // 12 - BakersChoc
+    {0.556863d, 0.137255d, 0.137255d}, // 13 - Firebrick
+    {0.960000d, 0.800000d, 0.690000d}, // 14 - Flesh
+    {0.850000d, 0.850000d, 0.950000d}, // 15 - Quartz
+    {0.419608d, 0.556863d, 0.137255d}, // 16 - MediumForestGreen
+    {0.730000d, 0.160000d, 0.960000d}  // 17 - MediumForestGreen
 };
 
 
@@ -40,11 +54,12 @@ void drawStrokeText(string s, double x, double y, double z, double sx, double sy
 
 void loadLastSesion() {
     freopen("last_session.lovelive", "r", stdin);
+    cin >> baseObj >> heightObj >> branchesObj >> slicesObj >> colorActLeaves;
     double x, y, z;
     string s;
     while (cin >> s) {
-        if (s == "sphere")  glColor3d(0.0d, 1.0d / (Rand(4) + 1.0d), 0.0d);
-        if (s == "cylinder")    glColor3d( 0.64d, 0.16d, 0.16d);
+        if (s == "sphere")      glColor3d(colors[colorActLeaves][0], colors[colorActLeaves][1] / (Rand(4) + 1.0d), colors[colorActLeaves][2]);
+        if (s == "cylinder")    glColor3d(0.64d, 0.16d, 0.16d);
         glBegin(GL_QUAD_STRIP);
         while (cin >> s && s != "glEnd") {
             cin >> x >> y >> z;
@@ -54,7 +69,8 @@ void loadLastSesion() {
     }
 }
 
-void createSphere(double x, double y, double z, double r) {
+void createSphere(double x, double y, double z, double r, double color[]) {
+    glColor3d(color[0], color[1] / (Rand(4) + 1), color[2]);
     double theta = 0.0f, theta2 = 2.0 * PI / slicesObj;
     double omega = 0.0f;
 
@@ -93,14 +109,14 @@ void createSphere(double x, double y, double z, double r) {
         theta = theta2;
         theta2 += 2.0 * PI / slicesObj;
     }
-    vSpheres.pb(ssp);
+    //vSpheres.pb(ssp);
 }
 
 
 
-void createCylinder(double r, double R, double h, Matrix m) {
+void createCylinder(double r, double R, double h, Matrix m, double color[], double div) {
     double theta = 0.0f;
-    glColor3d( 0.64d, 0.16d, 0.16d);
+    glColor3d(color[0], color[1] * div, color[2]);
 
     Cylinder cyl;
     FOR(i, 0, slicesObj) {
@@ -125,7 +141,7 @@ void createCylinder(double r, double R, double h, Matrix m) {
         cout << "glEnd" << endl;
     }
 
-    // vCylinders.pb(cyl);
+    //vCylinders.pb(cyl);
 }
 
 // Get the horizontal and vertical screen sizes in pixel
@@ -188,7 +204,7 @@ void toOBJ() {
 
     int iSSalto = vCylinders.size() * 2 * slicesObj;
     iSalto = slicesObj * 2;
-    FOR(i, 0, vCylinders.size()) {
+    FOR(i, 0, vSpheres.size() * slicesObj) {
         int iPAct = i * iSalto;
         // Lateral Faces
         FOR(j, 0, slicesObj) {

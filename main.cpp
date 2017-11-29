@@ -11,6 +11,10 @@ using namespace std;
 
 typedef pair<int, int> ii;
 
+static double baseObj = 0.3f;
+static double heightObj = 4.0f;
+static int branchesObj = 3;
+static int colorActLeaves = 7;
 void reCreateTree();
 
 #include "Geometry.h"
@@ -22,7 +26,7 @@ void reCreateTree();
 GLuint makeaTree;
 
 void makeTree(double height, double base, const bool b, Matrix matrizActual, int lvl) {
-    createCylinder(base, 0.8d * base, height * (1.0d - lvl * 0.08d), matrizActual);
+    createCylinder(base, 0.8d * base, height * (1.0d - lvl * 0.08d), matrizActual, colors[6], (1.0d - lvl * 0.15d));
 
     Matrix matrizMoved = matrizActual * Matrix::createTranslation(0.0d, height * (1.0d - lvl * 0.08d), 0.0d);
 
@@ -42,9 +46,9 @@ void makeTree(double height, double base, const bool b, Matrix matrizActual, int
             makeTree(height, base, false, matrizCycle, lvl + 1);
         }
     }
-    glColor3d(0.0d, 1.0d / (Rand(4) + 1.0d), 0.0d);
+    // glColor3d(0.0d, 1.0d / (Rand(4) + 1.0d), 0.0d);
     matrizMoved = matrizMoved * Matrix::originalPos();
-    createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d);
+    createSphere(matrizMoved.mat[0][3], matrizMoved.mat[1][3], matrizMoved.mat[2][3], 0.2d, colors[colorActLeaves]);
 }
 
 static bool lastSession = true;
@@ -71,6 +75,7 @@ void reCreateTree() {
     }
     else {
         freopen("last_session.lovelive", "w", stdout);
+        cout << baseObj << " " << heightObj << " " << branchesObj << " " << slicesObj << " " << colorActLeaves;
         makeTree(heightObj, baseObj, true, Matrix::identity(), 0);
         toOBJ();
     }

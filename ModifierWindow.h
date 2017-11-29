@@ -1,5 +1,5 @@
 
-static const double arrButtonMin2[8][4] = {
+static const double arrButtonMin2[9][4] = {
     {-0.90f,  0.55f, -0.70f,  0.35f},
     {-0.90f,  0.25f, -0.70f,  0.05f},
     {-0.90f, -0.05f, -0.70f, -0.25f},
@@ -8,9 +8,10 @@ static const double arrButtonMin2[8][4] = {
     {-0.05f,  0.25f,  0.15f,  0.05f},
     {-0.05f, -0.05f,  0.15f, -0.25f},
     {-0.05f, -0.35f,  0.15f, -0.55f},
+    {-0.05f, -0.65f,  0.15f, -0.85f}
 };
 
-static const double arrPlusSign2[8][4] = {
+static const double arrPlusSign2[9][4] = {
     {-0.25f,  0.40f, -0.15f,  0.10f},
     {-0.25f,  0.10f, -0.15f, -0.30f},
     {-0.25f, -0.20f, -0.15f, -0.70f},
@@ -19,9 +20,10 @@ static const double arrPlusSign2[8][4] = {
     { 0.75f,  0.10f,  0.85f, -0.30f},
     { 0.75f, -0.20f,  0.85f, -0.70f},
     { 0.75f, -0.50f,  0.85f, -0.70f},
+    { 0.75f, -0.80f,  0.85f, -0.95f}
 };
 
-static const double namesPosModifier[8][3] = {
+static const double namesPosModifier[9][3] = {
     {-0.65f,  0.40f, 0.00f},
     {-0.65f,  0.10f, 0.00f},
     {-0.65f, -0.20f, 0.00f},
@@ -30,17 +32,15 @@ static const double namesPosModifier[8][3] = {
     { 0.20f,  0.10f, 0.00f},
     { 0.20f, -0.20f, 0.00f},
     { 0.20f, -0.50f, 0.00f},
+    { 0.20f, -0.80f, 0.00f}
 };
 
 static const double btnRender[4] = {-0.90f, -0.65f, -0.20f, -0.85f};
 
-static const string names[8] = { "rot x", "rot y", "rot z", "", "base", "height", "branches", "slices" };
+static const string names[9] = { "rot x", "rot y", "rot z", "", "base", "height", "branches", "slices", "color leaves" };
 
 static double angsObj[3] = { 0.0f, 0.0f, 0.0f };
-static double baseObj = 0.4f;
-static double heightObj = 4.0f;
-static int branchesObj = 3;
-static double valObj[8] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj };
+static double valObj[9] = { angsObj[0], angsObj[1], angsObj[2], 0, baseObj, heightObj, (double)branchesObj, (double)slicesObj, (double)colorActLeaves };
 
 static double modifierWindowWidth;
 static double modifierWindowHeight;
@@ -49,7 +49,7 @@ ii findWherePressedModifier(int x, int y) {
     double xx = 2.0f * x / modifierWindowWidth - 1.0f;
     double yy = -(2.0f * y / modifierWindowHeight - 1.0f);
 
-    FOR(i, 0, 8) {
+    FOR(i, 0, 9) {
         if (between(arrButtonMin2[i][0], xx, arrButtonMin2[i][2]) &&
             between(arrButtonMin2[i][3], yy, arrButtonMin2[i][1])) {
             return ii(i, 1);
@@ -58,7 +58,7 @@ ii findWherePressedModifier(int x, int y) {
 
     if (between(btnRender[0], xx, btnRender[2]) &&
         between(btnRender[3], yy, btnRender[1])) {
-        return ii(8, 1);
+        return ii(9, 1);
     }
 
     return ii(-1, 0);
@@ -95,12 +95,16 @@ void mouseButtonPressedModifier(int button, int key, int x, int y) {
         valObj[pressed.first] = branchesObj;
     }
     else if (pressed.first == 7) {
-        slicesObj += pressed.second * 0.1f;
+        slicesObj += pressed.second;
         slicesObj = min(15, slicesObj);
         slicesObj = max(3, slicesObj);
         valObj[pressed.first] = slicesObj;
     }
-    else if (button == 0 && pressed.first == 8) {
+    else if (pressed.first == 8) {
+        colorActLeaves = (colorActLeaves - 7 + pressed.second + 11) % 11 + 7;
+        valObj[pressed.first] = colorActLeaves;
+    }
+    else if (button == 0 && pressed.first == 9) {
         reCreateTree();
     }
 
@@ -123,11 +127,12 @@ void displayModifier() {
     drawStrokeText("Object Modifications", -0.90f, 0.75f, 0, 0.0015f, 0.0015f, 0.0f, colors[3]);
 
     // Create minus buttons
-    FOR(i, 0, 8) {
+    FOR(i, 0, 9) {
         if (i == 3)   continue;
         // Create buttons
         glBegin(GL_POLYGON); {
-            glColor3f(colors[2][0],  colors[2][1], colors[2][2]);
+            if (i == 8)     glColor3f(colors[colorActLeaves][0],  colors[colorActLeaves][1], colors[colorActLeaves][2]);
+            else            glColor3f(colors[2][0],  colors[2][1], colors[2][2]);
             glVertex2f(arrButtonMin2[i][0], arrButtonMin2[i][1]);
             glVertex2f(arrButtonMin2[i][2], arrButtonMin2[i][1]);
             glVertex2f(arrButtonMin2[i][2], arrButtonMin2[i][3]);
@@ -138,7 +143,8 @@ void displayModifier() {
         drawStrokeText(names[i], namesPosModifier[i][0], namesPosModifier[i][1], namesPosModifier[i][2], 0.001f, 0.001f, 0.0f, colors[3]);
 
         // Add text: numbers
-        drawStrokeText(to_string(valObj[i]), arrPlusSign2[i][0], arrPlusSign2[i][1], 0, 0.001f, 0.001f, 0.0f, colors[5]);
+        if (i != 8)
+            drawStrokeText(to_string(valObj[i]), arrPlusSign2[i][0], arrPlusSign2[i][1], 0, 0.001f, 0.001f, 0.0f, colors[5]);
     }
 
     // Boton Render
